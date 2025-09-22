@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class IncidenceType extends Model
+{
+    use HasFactory;
+    protected $table = 'incidence_type';
+    public $timestamps = false;
+}
