@@ -5,6 +5,9 @@ import { useRouter, useRoute } from "vue-router";
 import { useToastr } from "@/toastr";
 import { Form, Field } from "vee-validate";
 import Search from "./Components/Search.vue";
+//import Multiselect from "./Components/MultiSelect.vue";
+import StaffSearch from "./Components/MultiSelect.vue";
+import { method } from "lodash";
 
 const router    = useRouter();
 const route     = useRoute();
@@ -183,11 +186,14 @@ onMounted(() => {
                                             <div class="form-group col-4">
                                                 <label v-if="!editMode">Busque y seleccione un usuario:</label>
                                                 <label v-else>Usuario:</label>
-                                                <Search
-                                                    v-if="!editMode"
-                                                    v-model="form.staffId"
-                                                    :class="{'is-invalid': errors.staffId}"
-                                                ></Search>
+                                                
+                                                <Field v-if="!editMode" name="staffId" v-slot="{ field, errorMessage }">
+                                                    <StaffSearch
+                                                        v-model="form.staffId"
+                                                        :error="errorMessage"
+                                                        v-bind="field"
+                                                    />
+                                                </Field>
                                                 <input v-else class="form-control" v-model="names" readonly>
                                                 <input type="hidden" v-model="form.staffId">
                                                 <div class="invalid-feedback">{{errors.staffId}}</div>

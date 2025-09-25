@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@vitejs/plugin-vue": "^2.3.3",
+        "@vueform/multiselect": "^2.6.11",
         "@vueuse/core": "^10.4.1",
         "admin-lte": "^3.2.0",
         "ag-grid-vue3": "^32.0.0",
@@ -27,6 +28,7 @@
         "sweetalert2": "^11.12.1",
         "vee-validate": "^4.6.5",
         "vue": "^3.2.37",
+        "vue-multiselect": "^3.3.1",
         "vue-router": "^4.1.2",
         "vue3-select2-component": "^0.1.7",
         "yup": "^0.32.11"

@@ -15,7 +15,7 @@ class ProfileController extends Controller {
 
     public function update(Request $request) {
         $validated = $request->validate([
-            'name' => ['required'],
+            'name'  => ['required'],
             'email' => ['required', 'email', Rule::unique('users')->ignore($request->user()->id)],
         ]);
 
@@ -25,8 +25,8 @@ class ProfileController extends Controller {
 
     public function uploadImage(Request $request) {
         if ($request->hasFile('profile_picture')) {
-            $previousPath = $request->user()->getRawOriginal('avatar');
-            $link = Storage::put('/photos', $request->file('profile_picture'));
+            $previousPath   = $request->user()->getRawOriginal('avatar');
+            $link           = Storage::put('/photos', $request->file('profile_picture'));
             $request->user()->update(['avatar' => $link]);
             Storage::delete($previousPath);
             return response()->json(['message' => 'Foto de perfil actualizado exitosamente']);

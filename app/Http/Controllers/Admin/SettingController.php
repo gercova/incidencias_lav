@@ -9,10 +9,9 @@ class SettingController extends Controller{
 
     public function index(){
         $settings = Setting::pluck('value', 'key')->toArray();
-        if (! $settings) {
+        if (!$settings) {
             return config('settings.default');
         }
-
         return $settings;
     }
 

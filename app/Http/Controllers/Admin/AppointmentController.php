@@ -18,36 +18,36 @@ class AppointmentController extends Controller
             ->latest()
             ->paginate()
             ->through(fn ($appoinment) => [
-                'id' => $appoinment->id,
-                'start_time' => $appoinment->start_time->format('Y-m-d h:i A'),
-                'end_time' => $appoinment->end_time->format('Y-m-d h:i A'),
-                'status' => [
-                    'name' => $appoinment->status->name,
-                    'color' => $appoinment->status->color(),
+                'id'            => $appoinment->id,
+                'start_time'    => $appoinment->start_time->format('Y-m-d h:i A'),
+                'end_time'      => $appoinment->end_time->format('Y-m-d h:i A'),
+                'status'        => [
+                    'name'      => $appoinment->status->name,
+                    'color'     => $appoinment->status->color(),
                 ],
-                'client' => $appoinment->client,
+                'client'        => $appoinment->client,
             ]);
     }
 
     public function store()
     {
         $validated = request()->validate([
-            'client_id' => 'required',
-            'title' => 'required',
-            'description' => 'required',
-            'start_time' => 'required',
-            'end_time' => 'required',
+            'client_id'     => 'required',
+            'title'         => 'required',
+            'description'   => 'required',
+            'start_time'    => 'required',
+            'end_time'      => 'required',
         ], [
             'client_id.required' => 'The client name field is required.',
         ]);
 
         Appointment::create([
-            'title' => $validated['title'],
-            'client_id' => $validated['client_id'],
-            'start_time' => $validated['start_time'],
-            'end_time' => $validated['end_time'],
-            'description' => $validated['description'],
-            'status' => AppointmentStatus::SCHEDULED,
+            'title'         => $validated['title'],
+            'client_id'     => $validated['client_id'],
+            'start_time'    => $validated['start_time'],
+            'end_time'      => $validated['end_time'],
+            'description'   => $validated['description'],
+            'status'        => AppointmentStatus::SCHEDULED,
         ]);
 
         return response()->json(['message' => 'success']);
@@ -59,11 +59,11 @@ class AppointmentController extends Controller
 
     public function update(Appointment $appointment) {
         $validated = request()->validate([
-            'client_id' => 'required',
-            'title' => 'required',
-            'description' => 'required',
-            'start_time' => 'required',
-            'end_time' => 'required',
+            'client_id'     => 'required',
+            'title'     	=> 'required',
+            'description'   => 'required',
+            'start_time'    => 'required',
+            'end_time'      => 'required',
         ], [
             'client_id.required' => 'The client name field is required.',
         ]);
