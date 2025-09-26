@@ -7,8 +7,10 @@ import { Form, Field } from "vee-validate";
 //import Search from "./Components/Search.vue";
 import StaffSearch from "./Components/MultiSelect.vue";
 import { method } from "lodash";
-import VueMultiselect from '@vueform/multiselect';
-import '@vueform/multiselect/themes/default.css';
+//import VueMultiselect from '@vueform/multiselect';
+
+//import MultiSelectApps from "./Components/MultiSelectApps.vue";
+import Multiselect from "vue-multiselect";
 
 const router    = useRouter();
 const route     = useRoute();
@@ -79,7 +81,8 @@ const getLevels = () => {
         levels.value = response.data;
     });
 };
-
+/*-------------------------------------------*/
+/*
 const apps = ref();
 const searchApp = ref([]);
 const fetchApps = () => {
@@ -123,6 +126,48 @@ const getIncidence = () => {
         names.value                 = data.user[0].user;
         appsInvolved.value          = data.apps;
     });
+};
+
+const removeRow = (id) => {
+    form.selectedItems.splice(id, 1);
+}
+*/
+/*-------------------------------------------*/
+const apps = ref([]);
+const selectedItem = ref(null);
+
+const fetchApps = async (query) => {
+    if (!query || query.length < 2) return;
+    
+    try {
+        const response = await axios.get('/api/applications/getApps', {
+            params: { query }
+        });
+        apps.value = response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        apps.value = [];
+    }
+};
+
+const handleSelect = (selectedOption) => {
+    if (!selectedOption) return;
+    
+    // 👇 Verificar duplicados (tu lógica original)
+    const found = form.selectedItems.find(el => el.id == selectedOption.id);
+    if (found) {
+        toastr.error('El ítem se repite');
+        selectedItem.value = null; // Limpiar selección
+        return;
+    }
+    
+    // 👇 Agregar al array
+    form.selectedItems.push({
+        id: selectedOption.id,
+        text: selectedOption.text
+    });
+    
+    selectedItem.value = null; // Limpiar después de agregar
 };
 
 const removeRow = (id) => {
@@ -282,25 +327,16 @@ onMounted(() => {
                                 <div class="form-group row">
                                     <div v-if="!editMode" class="col-lg-6">
                                         <label for="apps">Buscar aplicaciones afectadas:</label>
-                                        <!--<Select2
-                                            id="application"
-                                            name="application"
-                                            v-model="selectedItem"
-                                            :options="apps"
-                                            placeholder="Buscar aplicación..."
-                                            @select="selectItem($event)"
-                                        />-->
                                         
-                                        <VueMultiselect
+                                        <Multiselect
                                             v-model="selectedItem"
                                             :options="apps"
                                             :searchable="true"
-                                            :loading="isLoading"
                                             placeholder="Buscar aplicación..."
                                             label="text"
-                                            track-by="id"
+                                            value-prop="id"
                                             @search-change="fetchApps"
-                                            @select="selectItem"
+                                            @select="handleSelect"
                                         />
 
                                         <hr>
@@ -358,3 +394,4 @@ onMounted(() => {
         </div>
     </div>
 </template>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
