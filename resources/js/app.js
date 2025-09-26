@@ -11,7 +11,8 @@ import App from './App.vue';
 import { useAuthUserStore } from './stores/AuthUserStore';
 import { useSettingStore } from './stores/SettingStore';
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
-import Select2 from "vue3-select2-component";
+//import Select2 from "vue3-select2-component";
+//import MultiSelect from "@vueform/multiselect";
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
 import { AgGridVue } from "ag-grid-vue3"; // Vue Data Grid Component
@@ -39,7 +40,8 @@ router.beforeEach(async (to, from) => {
 app.use(pinia);
 app.use(router);
 app.component('Bootstrap4Pagination', Bootstrap4Pagination);
-app.component('Select2', Select2);
+//app.component('Select2', Select2);
+//app.component('MultiSelect', MultiSelect);
 app.component('AgGridVue', AgGridVue);
 app.component('Swal', Swal);
 app.mount('#app');

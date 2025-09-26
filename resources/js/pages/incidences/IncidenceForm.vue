@@ -4,10 +4,11 @@ import { reactive, onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useToastr } from "@/toastr";
 import { Form, Field } from "vee-validate";
-import Search from "./Components/Search.vue";
-//import Multiselect from "./Components/MultiSelect.vue";
+//import Search from "./Components/Search.vue";
 import StaffSearch from "./Components/MultiSelect.vue";
 import { method } from "lodash";
+import VueMultiselect from '@vueform/multiselect';
+import '@vueform/multiselect/themes/default.css';
 
 const router    = useRouter();
 const route     = useRoute();
@@ -215,7 +216,6 @@ onMounted(() => {
                                                 v-for="category in categories"
                                                 :key="category.id"
                                                 :value="category.id"
-                                                
                                             >
                                                 {{ category.description }}
                                             </option>
@@ -282,14 +282,27 @@ onMounted(() => {
                                 <div class="form-group row">
                                     <div v-if="!editMode" class="col-lg-6">
                                         <label for="apps">Buscar aplicaciones afectadas:</label>
-                                        <Select2
+                                        <!--<Select2
                                             id="application"
                                             name="application"
                                             v-model="selectedItem"
                                             :options="apps"
                                             placeholder="Buscar aplicación..."
                                             @select="selectItem($event)"
+                                        />-->
+                                        
+                                        <VueMultiselect
+                                            v-model="selectedItem"
+                                            :options="apps"
+                                            :searchable="true"
+                                            :loading="isLoading"
+                                            placeholder="Buscar aplicación..."
+                                            label="text"
+                                            track-by="id"
+                                            @search-change="fetchApps"
+                                            @select="selectItem"
                                         />
+
                                         <hr>
                                         <table class="table table-hover table-sm">
                                             <thead>
