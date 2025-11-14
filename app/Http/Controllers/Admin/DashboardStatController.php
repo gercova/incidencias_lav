@@ -31,7 +31,7 @@ class DashboardStatController extends Controller {
             ->count();
 
         return response()->json([
-            'totalIncidencesCount' => $totalIncidencesCount,
+            'totalIncidencesCount' => (int) $totalIncidencesCount,
         ]);
     }
 
@@ -47,7 +47,7 @@ class DashboardStatController extends Controller {
         }
 
         return response()->json([
-            'totalTypesCount' => $totalTypesCount,
+            'totalTypesCount' => (int) $totalTypesCount,
         ]);
     }
 
@@ -67,7 +67,8 @@ class DashboardStatController extends Controller {
         ]);
     }
 
-    public function incidencesByMonth(Request $request){
+    // Chart bar
+    /*public function incidencesByMonth(Request $request){
         $incidences = Incidence::where(function ($q) use ($request) {
             if($request->filled('start_date')) $q->where('created_at', '>=', request('start_date'));
             if($request->filled('end_date')) $q->where('created_at', '<=', request('end_date'));
@@ -89,8 +90,36 @@ class DashboardStatController extends Controller {
         }
 
         return $data;
+    }*/
+    
+    public function incidencesByMonth(Request $request){
+        $incidences = Incidence::where(function ($q) use ($request) {
+            if($request->filled('start_date')) $q->where('created_at', '>=', request('start_date'));
+            if($request->filled('end_date')) $q->where('created_at', '<=', request('end_date'));
+            if($request->selectedCategory !== 'TODO') $q->where('incidenceCategoryId', request('selectedCategory'));
+            if($request->selectedType !== 'TODO') $q->where('typeIncidenceId', request('selectedType'));
+        })
+        ->selectRaw('EXTRACT(MONTH FROM created_at) as month, COUNT(*) as count')
+        ->groupBy('month')
+        ->orderBy('month')
+        ->get();
+
+        $labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        $data = array_fill(0, 12, 0);
+
+        foreach ($incidences as $incidence) {
+            $data[$incidence->month - 1] = (int) $incidence->count;
+        }
+
+        return response()->json([
+            [
+                'name' => 'Incidencias',
+                'data' => $data
+            ]
+        ]);
     }
 
+    // Pie Charts
     public function incidencesByLevels(Request $request){
         $data = Incidence::where(function ($q) use ($request) {
             if($request->filled('start_date')) $q->where('created_at', '>=', request('start_date'));
@@ -108,13 +137,14 @@ class DashboardStatController extends Controller {
         $formattedData = $data->map(function ($item) {
             return [
                 'name'  => $item->category,
-                'y'     => $item->count
+                'y'     => (int) $item->count
             ];
         });
 
         return response()->json($formattedData);
     }
 
+    // Pie Chart
     public function incidenceByCategories(Request $request){
         $data = Incidence::where(function ($q) use ($request) {
             if($request->filled('start_date')) $q->where('created_at', '>=', request('start_date'));
@@ -132,13 +162,14 @@ class DashboardStatController extends Controller {
         $formattedData = $data->map( function ($item) {
             return [
                 'name'  => $item->category,
-                'y'     => $item->count
+                'y'     => (int) $item->count
             ];
         });
 
         return response()->json($formattedData);
     }
 
+    // Bar Chart
     public function incidencesbyUsers(Request $request){
         $data = Incidence::where(function ($q) use ($request) {
             if($request->filled('start_date')) $q->where('incidence.created_at', '>=', request('start_date'));
@@ -156,7 +187,7 @@ class DashboardStatController extends Controller {
         $formattedData = $data->map(function ($item) {
             return [
                 'name'      => $item->user,
-                'y'         => $item->total,
+                'y'         => (int) $item->total,
                 'drilldown' => $item->user
             ];
         });
@@ -169,6 +200,7 @@ class DashboardStatController extends Controller {
         ]);
     }
 
+    // Bar Chart
     public function incidencebyAreas(Request $request){
         $data = Incidence::where(function ($q) use ($request) {
             if($request->filled('start_date')) $q->where('incidence.created_at', '>=', request('start_date'));
@@ -187,7 +219,7 @@ class DashboardStatController extends Controller {
         $formattedData = $data->map(function ($item) {
             return [
                 'name'      => $item->direction,
-                'y'         => $item->total,
+                'y'         => (int) $item->total,
                 'drilldown' => $item->direction
             ];
         });

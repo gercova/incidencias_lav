@@ -1,4 +1,153 @@
+<template>
+  <div class="container-fluid">
+    <!-- Filtros -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Filtros de Reportes</h3>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3">
+            <label>Fecha Inicio</label>
+            <input 
+              v-model="filters.start_date" 
+              type="date" 
+              class="form-control"
+            >
+          </div>
+          <div class="col-md-3">
+            <label>Fecha Fin</label>
+            <input 
+              v-model="filters.end_date" 
+              type="date" 
+              class="form-control"
+            >
+          </div>
+          <div class="col-md-3">
+            <label>Categoría</label>
+            <select v-model="filters.selectedCategory" class="form-control">
+              <option value="TODO">Todas</option>
+              <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                {{ cat.name }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label>Tipo</label>
+            <select v-model="filters.selectedType" class="form-control">
+              <option value="TODO">Todos</option>
+              <option v-for="type in types" :key="type.id" :value="type.id">
+                {{ type.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row">
+      <div class="col-md-6">
+        <ChartComponent
+          title="Incidencias por Mes"
+          type="bar"
+          endpoint="incidences-by-month"
+          :filters="filters"
+        />
+      </div>
+      <div class="col-md-6">
+        <ChartComponent
+          title="Incidencias por Niveles"
+          type="pie"
+          endpoint="incidences-by-levels"
+          :filters="filters"
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <ChartComponent
+          title="Incidencias por Categorías"
+          type="doughnut"
+          endpoint="incidence-by-categories"
+          :filters="filters"
+        />
+      </div>
+      <div class="col-md-6">
+        <ChartComponent
+          title="Incidencias por Usuarios (Top 15)"
+          type="horizontalBar"
+          endpoint="incidences-by-users"
+          :filters="filters"
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <ChartComponent
+          title="Incidencias por Áreas"
+          type="bar"
+          endpoint="incidence-by-areas"
+          :filters="filters"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
+import { ref, onMounted, nextTick } from 'vue'
+import axios from 'axios'
+import ChartComponent from './Reports/ChartComponent.vue'
+
+const filters = ref({
+  start_date: '',
+  end_date: '',
+  selectedCategory: 'TODO',
+  selectedType: 'TODO'
+})
+
+const categories = ref([])
+const types = ref([])
+
+// Configurar axios
+const apiClient = axios.create({
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+  }
+})
+
+// Cargar categorías y tipos
+const loadOptions = async () => {
+  try {
+    // Cargar categorías
+    const catResponse = await apiClient.get('/api/incidence-categories')
+    categories.value = catResponse.data
+    
+    // Cargar tipos
+    const typeResponse = await apiClient.get('/api/incidence-types')
+    types.value = typeResponse.data
+  } catch (error) {
+    console.error('Error cargando opciones:', error)
+  }
+}
+
+onMounted(async () => {
+  await nextTick()
+  loadOptions()
+})
+</script>
+
+<style scoped>
+.row {
+  margin-bottom: 20px;
+}
+</style>
+<!--<script setup>
 import axios from "axios";
 import { onMounted, reactive, computed, ref } from "vue";
 import Reports from "./Reports/Reports.vue";
@@ -203,4 +352,4 @@ onMounted(() => {
             </div>
         </div>
     </div>
-</template>
+</template>-->
