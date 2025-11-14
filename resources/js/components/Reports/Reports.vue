@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-3">
                 <label for="category">Categoría: </label>
-                <select class="form-control" v-model="selectedCategory" id="category">
+                <select class="form-control" v-model="filters.selectedCategory" id="category">
                     <option value="TODO">TODO</option>
                     <option
                         v-for="cat in categories.value"
@@ -14,10 +14,9 @@
                     </option>
                 </select>
             </div>
-
             <div class="col-3">
                 <label for="type">Nivel:</label>
-                <select class="form-control" v-model="selectedType" id="type">
+                <select class="form-control" v-model="filters.selectedType" id="type">
                     <option value="TODO">TODO</option>
                     <option
                         v-for="type in types.value"
@@ -29,59 +28,73 @@
                 </select>
             </div>
             <div class="col-3">
-                <label for="sdate">Fecha inicio: </label>
-                <input type="date" class="form-control" v-model="start_date" id="sdate">
+                <label for="start_date">Fecha inicio: </label>
+                <input type="date" class="form-control" v-model="filters.start_date" id="star_date">
             </div>
             <div class="col-3">
-                <label for="edate">Fecha fin: </label>
-                <input type="date" class="form-control" v-model="end_date" id="edate">
+                <label for="end_date">Fecha fin: </label>
+                <input type="date" class="form-control" v-model="filters.end_date" id="end_date">
             </div>
         </div>
     </div>
+    <hr>
     <div class="col-12">
         <div class="row">
-            <div class="col-log-6">
+            <div class="col-lg-12">
                 <month-reports ref="incidencebymonths"></month-reports>
+            </div>
+            <div class="col-lg-6">
+                <level-reports ref="incidencebylevels"></level-reports>
+            </div>
+            <div class="col-lg-6">
+                <category-reports ref="incidencebycategories"></category-reports>
+            </div>
+            <div class="col-lg-12">
+                <user-drill-reports ref="incidencebyusers"></user-drill-reports>
+            </div>
+            <div class="col-lg-12">
+                <area-drill-reports ref="incidencebyareas"></area-drill-reports>
             </div>
         </div>
     </div>
-
 </template>
-
 <script>
 import { ref } from "vue";
-import Highcharts from 'highcharts';
 import axios from "axios";
 import MonthReports from "./MonthReports.vue";
+import LevelReports from "./LevelReports.vue";
+import UserDrillReports from "./UserDrillReports.vue";
+import CategoryReports from "./CategoryReports.vue";
+import AreaDrillReports from "./AreaDrillReports.vue";
 
 export default{
     components: {
         MonthReports,
+        LevelReports,
+        UserDrillReports,
+        CategoryReports,
+        AreaDrillReports,
     },
     data(){
         return{
-            //color: '#fff',
-            months: ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],
             incidencebymonths: [],
-            meses: [],
-            cantidad: [],
-            quantity: '',
-            numberMonth: '',
-            selectedCategory: ref('TODO'),
+            incidencebylevels: [],
+            incidencebycategories: [],
+            incidencebyusers: [],
+            incidencebyareas: [],
+            filters: {
+                selectedCategory: 'TODO',
+                selectedType: 'TODO',
+                start_date: '',
+                end_date: ''
+            },
+
             categories: ref([]),
-            selectedType: ref('TODO'),
             types: ref([]),
-            start_date: ref(),
-            end_date: ref(),
+            levels: ref([]),
         }
     },
     methods: {
-        getIncidenceByMonth(){
-            axios.get('/api/stats/months')
-            .then((response) => {
-                this.$refs.incidencebymonths.createChart(response.data)
-            });
-        },
         getCategories(){
             axios.get('/api/incidence-category')
             .then((response) => {
@@ -94,60 +107,66 @@ export default{
                 this.types.value = response.data;
             });
         },
-        createChart() {
-            Highcharts.chart('container', {
-                chart: {
-                    type: 'bar'
-                },
-                title: {
-                    text: 'Fruit Consumption'
-                },
-                xAxis: {
-                    categories: ['Apples', 'Bananas', 'Oranges']
-                },
-                yAxis: {
-                    title: {
-                        text: 'Fruit eaten'
-                    }
-                },
-                series: [{
-                    name: 'Jane',
-                    data: [1, 0, 4]
-                }, {
-                    name: 'John',
-                    data: [5, 7, 3]
-                }]
+        getIncidenceByMonth(){
+            axios.get('/api/stats/months', {
+                params: this.filters,
+            })
+            .then((response) => {
+                this.$refs.incidencebymonths.createChart(response.data);
             });
-            Highcharts.chart('data-category', {
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'Fruit Consumption'
-                },
-                xAxis: {
-                    categories: ['Apples', 'Bananas', 'Oranges']
-                },
-                yAxis: {
-                    title: {
-                        text: 'Fruit eaten'
-                    }
-                },
-                series: [{
-                    name: 'Jane',
-                    data: [1, 0, 4]
-                }, {
-                    name: 'John',
-                    data: [5, 7, 3]
-                }]
+        },
+        getIncidenceByLevel(){
+            axios.get('/api/stats/levels', {
+                params: this.filters,
+            }).then((response) => {
+                this.$refs.incidencebylevels.createChart(response.data);
             });
+        },
+        getIncidenceByCategory(){
+            axios.get('/api/stats/category', {
+                params: this.filters,
+            })
+            .then((response) => {
+                this.$refs.incidencebycategories.createChart(response.data);
+            });
+        },
+        getIncidinceByUser(){
+            axios.get('/api/stats/usersdrill', {
+                params: this.filters
+            })
+            .then((response) => {
+                this.$refs.incidencebyusers.createChart(response.data);
+            });
+        },
+        getIncidenceByArea(){
+            axios.get('/api/stats/areadrill', {
+                params: this.filters
+            })
+            .then((response) => {
+                this.$refs.incidencebyareas.createChart(response.data);
+            })
+        }
+    },
+    watch: {
+        'filters': {
+            handler(value){
+                this.getIncidenceByMonth();
+                this.getIncidenceByLevel();
+                this.getIncidenceByCategory();
+                this.getIncidinceByUser();
+                this.getIncidenceByArea();
+            },
+            deep:true
         }
     },
     mounted() {
-        this.getIncidenceByMonth();
         this.getCategories();
         this.getTypes();
-        this.createChart();
+        this.getIncidenceByMonth();
+        this.getIncidenceByLevel();
+        this.getIncidenceByCategory();
+        this.getIncidinceByUser();
+        this.getIncidenceByArea();
     }
 }
 </script>
