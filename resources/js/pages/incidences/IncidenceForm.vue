@@ -113,20 +113,7 @@ const selectItem = (item) => {
     });
 }
 
-const appsInvolved = ref([]);
-const names = ref([]);
-const getIncidence = () => {
-    axios.get(`/api/incidences/${route.params.id}/edit`).then(({ data }) => {
-        console.log(data);
-        form.staffId                = data.incidence.staffId;
-        form.incidenceCategoryId    = data.incidence.incidenceCategoryId;
-        form.typeIncidenceId        = data.incidence.typeIncidenceId;
-        form.description            = data.incidence.description;
-        form.solution               = data.incidence.solution;
-        names.value                 = data.user[0].user;
-        appsInvolved.value          = data.apps;
-    });
-};
+
 
 const removeRow = (id) => {
     form.selectedItems.splice(id, 1);
@@ -168,6 +155,21 @@ const handleSelect = (selectedOption) => {
     });
     
     selectedItem.value = null; // Limpiar después de agregar
+};
+
+const appsInvolved = ref([]);
+const names = ref([]);
+const getIncidence = () => {
+    axios.get(`/api/incidences/${route.params.id}/edit`).then(({ data }) => {
+        console.log(data);
+        form.staffId                = data.incidence.staffId;
+        form.incidenceCategoryId    = data.incidence.incidenceCategoryId;
+        form.typeIncidenceId        = data.incidence.typeIncidenceId;
+        form.description            = data.incidence.description;
+        form.solution               = data.incidence.solution;
+        names.value                 = data.user[0].user;
+        appsInvolved.value          = data.apps;
+    });
 };
 
 const removeRow = (id) => {
