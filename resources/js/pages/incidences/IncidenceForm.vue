@@ -113,8 +113,6 @@ const selectItem = (item) => {
     });
 }
 
-
-
 const removeRow = (id) => {
     form.selectedItems.splice(id, 1);
 }
