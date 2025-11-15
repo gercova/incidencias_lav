@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApplicationController;
-use App\Http\Controllers\Admin\ClientController;
+//use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\DashboardStatController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingController;
@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/api/users/{user}',              [UserController::class, 'destroy']);
     Route::delete('/api/users',                     [UserController::class, 'bulkDelete']);
     
-    Route::get('/api/clients',                      [ClientController::class, 'index']);
+    //Route::get('/api/clients',                      [ClientController::class, 'index']);
 
     Route::get('/api/settings',                     [SettingController::class, 'index']);
     Route::post('/api/settings',                    [SettingController::class, 'update']);

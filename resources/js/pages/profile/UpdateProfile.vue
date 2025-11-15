@@ -15,6 +15,7 @@ const formData = reactive({
 
 const getUser = () => {
     axios.get(`/api/profile`).then((response) => {
+        console.log(response);
         formData.name   = authUserStore.user.name;
         formData.email  = authUserStore.user.email;
         formData.role   = authUserStore.user.role;
@@ -24,20 +25,19 @@ const getUser = () => {
 
 const errors = ref([]);
 const updateProfile = () => {
-    axios
-        .put(`/api/profile`, {
-            name: authUserStore.user.name,
-            email: authUserStore.user.email,
-            role: authUserStore.user.role,
-        })
-        .then((response) => {
-            toastr.success(response.data.message);
-        })
-        .catch((error) => {
-            if (error.response && error.response.status === 422) {
-                errors.value = error.response.data.errors;
-            }
-        });
+    axios.put(`/api/profile`, {
+        name: authUserStore.user.name,
+        email: authUserStore.user.email,
+        role: authUserStore.user.role,
+    })
+    .then((response) => {
+        toastr.success(response.data.message);
+    })
+    .catch((error) => {
+        if (error.response && error.response.status === 422) {
+            errors.value = error.response.data.errors;
+        }
+    });
 };
 
 const changePasswordForm = reactive({

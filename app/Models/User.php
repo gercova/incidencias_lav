@@ -37,6 +37,19 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function getProfilePhotoUrlAttribute() {
+        // URL externa
+        if ($this->avatar && filter_var($this->avatar, FILTER_VALIDATE_URL)) {
+            return $this->avatar;
+        }
+        // Imagen local existe
+        if ($this->avatar && Storage::disk('photos')->exists($this->avatar)) {
+            return Storage::url($this->avatar);
+        }
+        // Imagen por defecto
+        return asset('storage/photos/anonymous.png');
+    }
+
     /**
      * The attributes that should be cast.
      *
