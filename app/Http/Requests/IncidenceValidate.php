@@ -13,6 +13,7 @@ class IncidenceValidate extends FormRequest
     public function rules(){
         return [
             'staffId'               => 'required',
+            'created_at'            => 'date|nullable',
             'incidenceCategoryId'   => 'required',
             'typeIncidenceId'       => 'required',
             'description'           => 'required',
@@ -23,6 +24,7 @@ class IncidenceValidate extends FormRequest
     public function messages(){
         return [
             'staffId.required'              => 'El campo usuario es obligatorio.',
+            'created_at.date'               => 'El campo fecha debe ser de tipo fecha (YYYY-MM-DD)',
             'incidenceCategoryId.required'  => 'El campo categoría incidencia es obligatorio.',
             'typeIncidenceId.required'      => 'El campo tipo categoria es obligatorio.',
             'description.required'          => 'El campo descripción es obligatorio.',
