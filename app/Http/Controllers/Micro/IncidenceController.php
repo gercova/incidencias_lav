@@ -60,13 +60,9 @@ class IncidenceController extends Controller {
         $incidence->typeIncidenceId     = $validated['typeIncidenceId'];
         $incidence->description         = $validated['description'];
         $incidence->solution            = $validated['solution'];
-        // $incidence->created_at          = !empty($validated['created_at']) ? $validated['created_at'].' '.now('H:i:s') : now()->format('Y-m-d H:i:s');
-        // CORRECCIÓN DEL ERROR - Manejo correcto de created_at
         if (!empty($validated['created_at'])) {
-            // Si viene fecha personalizada, agregar la hora actual
             $incidence->created_at = $validated['created_at'] . ' ' . now()->format('H:i:s');
         } else {
-            // Si no viene fecha, usar fecha y hora actual
             $incidence->created_at = now();
         }
         $incidence->save();
