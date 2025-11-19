@@ -47,7 +47,7 @@ class User extends Authenticatable
             return Storage::url($this->avatar);
         }
         // Imagen por defecto
-        return asset('storage/photos/anonymous.png');
+        return asset('storage/public/photos/anonymous.png');
     }
 
     /**
