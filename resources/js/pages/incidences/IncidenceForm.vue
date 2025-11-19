@@ -19,6 +19,7 @@ const editMode  = ref(false);
 const loadClass = ref('bi bi-floppy');
 const form      = reactive({
     staffId: "",
+    created_at: "",
     incidenceCategoryId: "",
     typeIncidenceId: "",
     description: "",
@@ -162,6 +163,7 @@ const getIncidence = () => {
     axios.get(`/api/incidences/${route.params.id}/edit`).then(({ data }) => {
         console.log(data);
         form.staffId                = data.incidence.staffId;
+        form.created_at             = data.incidence.created_at
         form.incidenceCategoryId    = data.incidence.incidenceCategoryId;
         form.typeIncidenceId        = data.incidence.typeIncidenceId;
         form.description            = data.incidence.description;
@@ -244,6 +246,23 @@ onMounted(() => {
                                                 <input v-else class="form-control" v-model="names" readonly>
                                                 <input type="hidden" v-model="form.staffId">
                                                 <div class="invalid-feedback">{{errors.staffId}}</div>
+                                            </div>
+                                            <div class="form-group col-4">
+                                                <label v-if="!editMode" for="created_at">Ingrese la fecha del incidente</label>
+                                                <label v-else for="created_at">Fecha del incidente</label>
+                                                <Field
+                                                    v-if="!editMode" 
+                                                    as="input"
+                                                    type="date"
+                                                    name="created_at"
+                                                    v-model="form.created_at"
+                                                    class="form-control"
+                                                    :class="{'is-invalid': errors.created_at}"
+                                                    id="created_at"
+                                                    rows="3"
+                                                    placeholder="Ingresa la fecha de la incidencia"
+                                                ></Field>
+                                                <input v-else type="text" class="form-control" v-model="form.created_at" readonly>
                                             </div>
                                         </div>
                                     </div>
