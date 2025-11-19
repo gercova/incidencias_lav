@@ -16,7 +16,7 @@ class IncidenceResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'staff_id' => $this->id,
+            'staffId' => $this->staffId,
             'incidenceCategoryId' => $this->incidenceCategoryId,
             'typeIncidenceId' => $this->typeIncidenceId,
             'description' => $this->description,
