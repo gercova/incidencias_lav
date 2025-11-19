@@ -18,13 +18,13 @@ const toastr    = useToastr();
 const editMode  = ref(false);
 const loadClass = ref('bi bi-floppy');
 const form      = reactive({
-    staffId: "",
-    created_at: "",
-    incidenceCategoryId: "",
-    typeIncidenceId: "",
-    description: "",
-    solution: "",
-    selectedApp: "",
+    staffId: '',
+    created_at: '',
+    incidenceCategoryId: '',
+    typeIncidenceId: '',
+    description: '',
+    solution: '',
+    selectedApp: '',
     selectedItems: []
 });
 
@@ -122,7 +122,6 @@ const removeRow = (id) => {
 /*-------------------------------------------*/
 const apps = ref([]);
 const selectedItem = ref(null);
-
 const fetchApps = async (query) => {
     if (!query || query.length < 2) return;
     
@@ -139,8 +138,7 @@ const fetchApps = async (query) => {
 
 const handleSelect = (selectedOption) => {
     if (!selectedOption) return;
-    
-    // 👇 Verificar duplicados (tu lógica original)
+    // Verificar duplicados (tu lógica original)
     const found = form.selectedItems.find(el => el.id == selectedOption.id);
     if (found) {
         toastr.error('El ítem se repite');
@@ -148,7 +146,7 @@ const handleSelect = (selectedOption) => {
         return;
     }
     
-    // 👇 Agregar al array
+    // Agregar al array
     form.selectedItems.push({
         id: selectedOption.id,
         text: selectedOption.text
@@ -244,7 +242,7 @@ onMounted(() => {
                                                     />
                                                 </Field>
                                                 <input v-else class="form-control" v-model="names" readonly>
-                                                <input type="hidden" v-model="form.staffId">
+                                                <input v-if="editMode" type="hidden" name="staffId" v-model="form.staffId" id="staffId">
                                                 <div class="invalid-feedback">{{errors.staffId}}</div>
                                             </div>
                                             <div class="form-group col-4">
@@ -259,10 +257,9 @@ onMounted(() => {
                                                     class="form-control"
                                                     :class="{'is-invalid': errors.created_at}"
                                                     id="created_at"
-                                                    rows="3"
                                                     placeholder="Ingresa la fecha de la incidencia"
                                                 ></Field>
-                                                <input v-else type="text" class="form-control" v-model="form.created_at" readonly>
+                                                <input v-else type="datetime" class="form-control" v-model="form.created_at">
                                             </div>
                                         </div>
                                     </div>
