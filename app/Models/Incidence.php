@@ -18,7 +18,7 @@ class Incidence extends Model {
         return $this->belongsTo(Staff::class);
     }
 
-    protected $dates = ['deleted_at'];
+    protected $dates = ['created_at', 'updated_at','deleted_at'];
 
     protected $casts = [
         'status' => IncidenceStatus::class,
@@ -44,7 +44,7 @@ class Incidence extends Model {
         ]];
 
         foreach ($incidences as $incidence) {
-            $data[0]['data'][$incidence->month - 1] = $incidence->count;
+            $data[0]['data'][$incidence->month - 1] = (int) $incidence->count;
         }
 
         return $data;
